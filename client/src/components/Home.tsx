@@ -1,20 +1,44 @@
 import { Braces } from "lucide-react";
+import { SignedOut, SignInButton, useUser } from "@clerk/clerk-react";
+import { JSX } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
+  const { isSignedIn } = useUser();
+  const navigate = useNavigate();
+
+  console.log(isSignedIn);
+
+  if (isSignedIn) {
+    window.location.href = "/dashboard";
+  }
+
   return (
     <>
       <nav className="flex justify-between px-10 py-3 bg-[#101012] ">
-        <div className="flex">
+        <div className="flex items-center">
           <Braces className="text-purple-600 h-10 w-8" />
-          <span className="text-white font-bold text-2xl pl-2">Code Nimbus</span>
+          <span className="text-white font-bold text-2xl pl-2">
+            Code Nimbus
+          </span>
         </div>
         <div className="flex gap-2">
-          <button className="text-white  hover:bg-white hover:text-black w-20 h-10 border-none rounded-md cursor pointer font-bold transition delay-75">
+          {/* <SignedOut>
+            <SignInButton>
+              <button className="text-white  hover:bg-white hover:text-black w-28 h-10 border-none rounded-md cursor pointer font-bold transition delay-75 ">
+                Get Started
+              </button>
+            </SignInButton>
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn> */}
+          {/* <button className="text-white  hover:bg-white hover:text-black w-20 h-10 border-none rounded-md cursor pointer font-bold transition delay-75">
             Log In
           </button>
           <button className="text-white  bg-purple-600 hover:bg-purple-700 w-28 h-10 border-none rounded-md font-bold cursor pointer transition delay-75">
             Get Started
-          </button>
+          </button> */}
         </div>
       </nav>
 
@@ -30,9 +54,14 @@ function Home() {
               developers. Write, debug, and deploy your code from anywhere.
             </p>
             <div className="flex gap-4 justify-center">
-              <button className="text-white  bg-purple-600 hover:bg-purple-700 w-32 h-10 border-none rounded-md font-bold cursor pointer transition delay-75 ">
-                Try Now
-              </button>
+              <SignedOut>
+                <SignInButton>
+                  <button className="text-white  bg-purple-600 hover:bg-purple-700 w-28 h-10 border-none rounded-md font-bold cursor-pointer transition delay-75">
+                    Get Started
+                  </button>
+                </SignInButton>
+              </SignedOut>
+
               {/* <button  className="text-white  hover:bg-white hover:text-black w-34 h-10 border-none rounded-md cursor pointer font-bold transition delay-75 border-2 border-white">
          Try Web Version
        </button> */}
