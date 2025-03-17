@@ -1,11 +1,8 @@
 import { Braces } from "lucide-react";
 import { SignedOut, SignInButton, useUser } from "@clerk/clerk-react";
-import { JSX } from "react";
-import { useNavigate } from "react-router-dom";
 
 function Home() {
   const { isSignedIn } = useUser();
-  const navigate = useNavigate();
 
   console.log(isSignedIn);
 
@@ -18,9 +15,7 @@ function Home() {
       <nav className="flex justify-between px-10 py-3 bg-[#101012] ">
         <div className="flex items-center">
           <Braces className="text-purple-600 h-10 w-8" />
-          <span className="text-white font-bold text-2xl pl-2">
-            Code Nimbus
-          </span>
+          <span className="font-bold text-2xl pl-2">Code Nimbus</span>
         </div>
         <div className="flex gap-2">
           {/* <SignedOut>
@@ -56,7 +51,7 @@ function Home() {
             <div className="flex gap-4 justify-center">
               <SignedOut>
                 <SignInButton>
-                  <button className="text-white  bg-purple-600 hover:bg-purple-700 w-28 h-10 border-none rounded-md font-bold cursor-pointer transition delay-75">
+                  <button className="bg-purple-600 hover:bg-purple-700 w-28 h-10 border-none rounded-md font-bold cursor-pointer transition delay-75">
                     Get Started
                   </button>
                 </SignInButton>
