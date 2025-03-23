@@ -2,6 +2,8 @@ import { SignedIn, UserButton } from "@clerk/clerk-react";
 import { useUser } from "@clerk/clerk-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { SidebarProvider, SidebarTrigger } from "./ui/sidebar";
+import { AppSidebar } from "./ui/app-sidebar";
 
 interface userObj {
   userId: string;
@@ -10,7 +12,7 @@ interface userObj {
   profilePic: string;
 }
 
-const Dashboard = () => {
+function Dashboard() {
   const [CurrUser, setCurrUser] = useState<userObj>();
 
   const { isLoaded, isSignedIn, user } = useUser();
@@ -62,12 +64,26 @@ const Dashboard = () => {
 
   return (
     <>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
-      <div className="">dashboard</div>
+      <div className="flex justify-between  h-10 border-2">
+        <div className="">
+          <SidebarProvider>
+            <AppSidebar />
+            <SidebarTrigger className="p-2rounded-lg transition" />
+          </SidebarProvider>
+        </div>
+
+        <div className="">
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+        </div>
+      </div>
+
+      <div className="flex-grow flex justify-center items-center">
+        <h1 className="text-2xl font-semibold">Welcome to Your Dashboard</h1>
+      </div>
     </>
   );
-};
+}
 
 export default Dashboard;

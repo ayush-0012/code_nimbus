@@ -39,7 +39,7 @@
     /* Paths and Base URL */
     "baseUrl": ".", // Base directory for resolving non-relative module names
     "paths": {
-      "@/*": ["src/*"] // Map paths like '@/' to 'src/'
+      "@/*": ["./src/*"] // Map paths like '@/' to 'src/'
     }
   },
   "include": ["src"], // Include all files in the 'src' directory
