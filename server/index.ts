@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import { userRouter } from "./src/routes/user.routes";
 import cors from "cors";
+import { signInCheck } from "./src/middleware/signedIn.middleware";
 
 dotenv.config();
 const app: Express = express();
@@ -17,6 +18,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(signInCheck);
 
 app.use("/api/user", userRouter);
 
