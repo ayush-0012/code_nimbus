@@ -1,7 +1,6 @@
 import {
   Users,
   Clock,
-  FileSpreadsheet,
   Folder,
   Trash2,
   Share2,
@@ -9,7 +8,6 @@ import {
   FileText,
   FolderOpen,
   GitFork,
-  ChevronDown,
 } from "lucide-react";
 
 import {
@@ -17,7 +15,6 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -74,7 +71,7 @@ export function AppSidebar() {
             </div>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton className="text-md">
+                <SidebarMenuButton className="text-lg">
                   <FolderOpen className="h-4 w-4" />
                   <span>All repositories</span>
                 </SidebarMenuButton>

@@ -15,9 +15,12 @@ function Home() {
       <nav className="flex justify-between px-10 py-3 bg-[#101012] ">
         <div className="flex items-center">
           <Braces className="text-purple-600 h-10 w-8" />
-          <span className="font-bold text-2xl pl-2">Code Nimbus</span>
+          <span className="font-bold text-2xl pl-2 text-white">
+            Code Nimbus
+          </span>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 ">
+          {/* <ModeToggle /> */}
           {/* <SignedOut>
             <SignInButton>
               <button className="text-white  hover:bg-white hover:text-black w-28 h-10 border-none rounded-md cursor pointer font-bold transition delay-75 ">
@@ -37,7 +40,7 @@ function Home() {
         </div>
       </nav>
 
-      <section className="py-20 md:py-32 relative overflow-hidden">
+      <section className="py-20 md:py-32 relative overflow-hidden bg-black">
         <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 to-transparent opacity-50"></div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center mb-12">
@@ -51,7 +54,7 @@ function Home() {
             <div className="flex gap-4 justify-center">
               <SignedOut>
                 <SignInButton>
-                  <button className="bg-purple-600 hover:bg-purple-700 w-28 h-10 border-none rounded-md font-bold cursor-pointer transition delay-75">
+                  <button className="bg-purple-600 hover:bg-purple-700 w-28 h-10 border-none rounded-md font-bold cursor-pointer transition delay-75 text-white">
                     Get Started
                   </button>
                 </SignInButton>

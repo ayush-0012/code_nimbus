@@ -4,6 +4,10 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { SidebarProvider, SidebarTrigger } from "./ui/sidebar";
 import { AppSidebar } from "./ui/app-sidebar";
+import { Button } from "./ui/button";
+import { Github, Plus } from "lucide-react";
+import { Input } from "./ui/input";
+import { ModeToggle } from "./ui/mode-toggle";
 
 interface userObj {
   userId: string;
@@ -64,7 +68,7 @@ function Dashboard() {
 
   return (
     <>
-      <div className="flex justify-between  h-10 border-2">
+      <div className="flex justify-between h-10 pt-4 px-2">
         <div className="">
           <SidebarProvider>
             <AppSidebar />
@@ -72,10 +76,31 @@ function Dashboard() {
           </SidebarProvider>
         </div>
 
-        <div className="">
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
+        <div className="flex justify-between items-center gap-3">
+          <ModeToggle />
+          <Input
+            type="text"
+            placeholder="Seach in Workspace"
+            className="border-none "
+          />
+
+          <div>
+            <Button className="cursor-pointer">
+              <Github />
+              <span>Import</span>
+            </Button>
+          </div>
+          <div>
+            <Button className="cursor-pointer">
+              <Plus />
+              <span>Create</span>
+            </Button>
+          </div>
+          <div className=" w-10 h-10 flex justify-center items-center text-2xl">
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+          </div>
         </div>
       </div>
 

@@ -3,10 +3,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
-body {
+/* body {
   background: black;
   color: white;
-}
+} */
 
 :root {
   --radius: 0.625rem;
