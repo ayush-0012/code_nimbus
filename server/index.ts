@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { userRouter } from "./src/routes/user.routes";
 import cors from "cors";
 import { signInCheck } from "./src/middleware/signedIn.middleware";
+import { containerRoute } from "./src/routes/container.routes";
 
 dotenv.config();
 const app: Express = express();
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(signInCheck);
 
 app.use("/api/user", userRouter);
+app.use("/api/container", containerRoute);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("server is running, home page");

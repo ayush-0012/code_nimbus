@@ -1,6 +1,8 @@
 import express, { Router } from "express";
 import { runPythonContainer } from "../controllers/container.controller";
 
-const route: Router = express.Router();
+const router: Router = express.Router();
 
-route.post("/container/py", runPythonContainer);
+router.post("/py", runPythonContainer);
+
+export const containerRoute: Router = router;
