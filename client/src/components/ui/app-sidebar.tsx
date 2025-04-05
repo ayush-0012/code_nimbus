@@ -24,99 +24,85 @@ import {
 export function AppSidebar() {
   return (
     <Sidebar>
-      <SidebarContent className="bg-black text-white">
+      <SidebarContent className="bg-black text-white text-sm">
         <SidebarGroup>
-          <SidebarHeader className="px-3 py-2 mb-8">
+          <SidebarHeader className="px-4 py-3 mb-6 border-b border-zinc-800">
             <div className="flex items-center gap-2">
-              <div className="h-5 w-5 rounded border border-zinc-700"></div>
+              <div className="h-4 w-4 rounded border border-zinc-700"></div>
               <div className="flex items-center gap-1">
-                <span className="font-medium">username</span>
-                {/* <ChevronDown className="h-4 w-4 text-zinc-400" /> */}
+                <span className="text-sm font-medium text-white">username</span>
               </div>
             </div>
           </SidebarHeader>
+
           <SidebarGroupContent>
-            {/* FIRST MENU SECTION */}
+            {/* SECTION: General */}
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton className="text-lg">
-                  <Clock className="h-4 w-4" />
-                  <span>Recent</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton className="text-lg">
-                  <Cog className="h-4 w-4" />
-                  <span>Settings</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton className="text-lg">
-                  <Users className="h-4 w-4" />
-                  <span>Invite members</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton className="text-lg">
-                  <FileText className="h-4 w-4" />
-                  <span>Get started</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {[
+                { icon: Clock, label: "Recent" },
+                { icon: Cog, label: "Settings" },
+                { icon: Users, label: "Invite members" },
+                { icon: FileText, label: "Get started" },
+              ].map(({ icon: Icon, label }) => (
+                <SidebarMenuItem key={label}>
+                  <SidebarMenuButton className="gap-2 text-zinc-200 hover:text-white hover:bg-zinc-800 rounded-md px-2 py-1.5 transition cursor-pointer">
+                    <Icon className="h-4 w-4" />
+                    <span>{label}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
-            {/* SECOND MENU SECTION */}
-            <div className="mt-6 px-3 py-2">
-              <h3 className="text-lg font-medium text-zinc-400">
+
+            {/* SECTION: Repositories */}
+            <div className="mt-5 px-4 py-2">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-400">
                 Repositories
               </h3>
             </div>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton className="text-lg">
-                  <FolderOpen className="h-4 w-4" />
-                  <span>All repositories</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton className="text-lg">
-                  <GitFork className="h-4 w-4" />
-                  <span>My contributions</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {[
+                { icon: FolderOpen, label: "All repositories" },
+                { icon: GitFork, label: "My contributions" },
+              ].map(({ icon: Icon, label }) => (
+                <SidebarMenuItem key={label}>
+                  <SidebarMenuButton className="gap-2 text-zinc-200 hover:text-white hover:bg-zinc-800 rounded-md px-2 py-1.5 transition cursor-pointer">
+                    <Icon className="h-4 w-4" />
+                    <span>{label}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
-            {/* THIRD MENU SECTION */}
-            <div className="mt-6 px-3 py-2">
-              <h3 className="text-lg font-medium text-zinc-400">
+
+            {/* SECTION: Devboxes and Sandboxes */}
+            <div className="mt-5 px-4 py-2">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-400">
                 Devboxes and Sandboxes
               </h3>
             </div>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton className="text-lg">
-                  <FileText className="h-4 w-4" />
-                  <span>Drafts</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton className="text-lg">
-                  <Folder className="h-4 w-4" />
-                  <span>All folders</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton className="text-lg">
-                  <Trash2 className="h-4 w-4" />
-                  <span>Recently deleted</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {[
+                { icon: FileText, label: "Drafts" },
+                { icon: Folder, label: "All folders" },
+                { icon: Trash2, label: "Recently deleted" },
+              ].map(({ icon: Icon, label }) => (
+                <SidebarMenuItem key={label}>
+                  <SidebarMenuButton className="gap-2 text-zinc-200 hover:text-white hover:bg-zinc-800 rounded-md px-2 py-1.5 transition cursor-pointer">
+                    <Icon className="h-4 w-4" />
+                    <span>{label}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
 
-            {/* FOURTH MENU SECTION */}
-            <div className="mt-6 px-3 py-2">
-              <h3 className="text-lg font-medium text-zinc-400">Shared</h3>
+            {/* SECTION: Shared */}
+            <div className="mt-5 px-4 py-2">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-400">
+                Shared
+              </h3>
             </div>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton className="text-lg">
+                <SidebarMenuButton className="gap-2 text-zinc-200 hover:text-white hover:bg-zinc-800 rounded-md px-2 py-1.5 transition cursor-pointer">
                   <Share2 className="h-4 w-4" />
                   <span>Shared with me</span>
                 </SidebarMenuButton>

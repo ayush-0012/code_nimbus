@@ -8,6 +8,7 @@ import { Button } from "./ui/button";
 import { Github, Plus } from "lucide-react";
 import { Input } from "./ui/input";
 import { ModeToggle } from "./ui/mode-toggle";
+import CreateDialog from "./modal/CreateDialog";
 
 interface userObj {
   userId: string;
@@ -18,8 +19,9 @@ interface userObj {
 
 function Dashboard() {
   const [CurrUser, setCurrUser] = useState<userObj>();
+  const [createDialog, setCreateDialog] = useState<boolean>(false);
 
-  const { isLoaded, isSignedIn, user } = useUser();
+  const { user, isSignedIn, isLoaded } = useUser();
 
   useEffect(() => {
     console.log(user);
@@ -46,7 +48,7 @@ function Dashboard() {
 
     try {
       const response = await axios.post(
-        "http://localhost:7000/api/user/signIn",
+        "http://localhost:9000/api/user/signIn",
         {
           userId,
           userName,
@@ -62,20 +64,13 @@ function Dashboard() {
 
       console.log(response);
     } catch (error) {
-      console.log(error, "error signing in");
+      console.log(error, "error storing in");
     }
   }
 
   return (
     <>
-      <div className="flex justify-between h-10 pt-4 px-2">
-        <div className="">
-          <SidebarProvider>
-            <AppSidebar />
-            <SidebarTrigger className="p-2rounded-lg transition" />
-          </SidebarProvider>
-        </div>
-
+      <div className="flex justify-end h-10 pt-4 px-2">
         <div className="flex justify-between items-center gap-3">
           <ModeToggle />
           <Input
@@ -91,7 +86,13 @@ function Dashboard() {
             </Button>
           </div>
           <div>
-            <Button className="cursor-pointer">
+            {/* <DialogTrigger asChild>
+              <Button variant="outline">Edit Profile</Button>
+            </DialogTrigger> */}
+            <Button
+              className="cursor-pointer"
+              onClick={() => setCreateDialog(true)}
+            >
               <Plus />
               <span>Create</span>
             </Button>
@@ -104,8 +105,26 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="flex-grow flex justify-center items-center">
-        <h1 className="text-2xl font-semibold">Welcome to Your Dashboard</h1>
+      <div className="flex w-full">
+        <div className="">
+          <SidebarProvider>
+            <AppSidebar />
+            {/* <SidebarTrigger className="p-2 rounded-lg transition" /> */}
+          </SidebarProvider>
+        </div>
+
+        <div className="mt-10 ml-10 w-full-100">
+          <h1 className="text-4xl font-semibold">Recent</h1>
+          <p className=" text-xl mt-8">Pick up where you left off</p>
+
+          <div className="mt-20 text-3xl">render workspace later</div>
+
+          {createDialog ? (
+            <CreateDialog open={createDialog} onOpenChange={setCreateDialog} />
+          ) : (
+            ""
+          )}
+        </div>
       </div>
     </>
   );
