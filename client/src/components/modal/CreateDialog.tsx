@@ -1,5 +1,16 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import axios from "axios";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -8,16 +19,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
+import { useAppDispatch } from "@/hooks/redux-hooks";
+import { setContainerId } from "@/redux/feature/container/containerSlice";
+import { useNavigate } from "react-router-dom";
 
 interface CreateDialogProps {
   open: boolean;
@@ -30,15 +34,44 @@ function CreateDialog({ open, onOpenChange }: CreateDialogProps) {
   );
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string>("");
+  const [loading, setLoading] = useState<Boolean>(false);
 
-  const handleSave = () => {
+  const userId = localStorage.getItem("userId");
+  const navigate = useNavigate();
+
+  const dispatch = useAppDispatch();
+
+  const handleCreate = async () => {
     const type = activeTab === "languages" ? "Language" : "Framework";
     console.log("Type:", type);
     console.log("Selected:", selectedOption);
     console.log("File Name:", fileName);
 
-    // You'll use type, selectedOption, and fileName for an API call later
+    setLoading(true);
+
+    try {
+      const response = await axios.post(
+        `http://localhost:9000/api/container/${selectedOption}`,
+        {
+          fileName,
+          language: selectedOption,
+          userId,
+        }
+      );
+
+      console.log(response);
+      dispatch(setContainerId(response.data.containerId));
+    } catch (error) {
+      console.log("error creating workspace", error);
+    } finally {
+      setLoading(false);
+      navigate("/workspace");
+    }
   };
+
+  if (loading) {
+    return <div>loading...</div>;
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -93,11 +126,11 @@ function CreateDialog({ open, onOpenChange }: CreateDialogProps) {
                     <SelectValue placeholder="Select a language" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="javascript">JavaScript</SelectItem>
+                    <SelectItem value="javaScript">JavaScript</SelectItem>
                     <SelectItem value="python">Python</SelectItem>
                     <SelectItem value="java">Java</SelectItem>
-                    <SelectItem value="c++">C++</SelectItem>
-                    <SelectItem value="typescript">TypeScript</SelectItem>
+                    <SelectItem value="cpp">C++</SelectItem>
+                    <SelectItem value="typeScript">TypeScript</SelectItem>
                     <SelectItem value="go">Go</SelectItem>
                   </SelectContent>
                 </Select>
@@ -129,8 +162,8 @@ function CreateDialog({ open, onOpenChange }: CreateDialogProps) {
                     <SelectValue placeholder="Select a framework" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="react">React</SelectItem>
-                    <SelectItem value="nextjs">Next.js</SelectItem>
+                    <SelectItem value="reactJs">React</SelectItem>
+                    <SelectItem value="nextJs">Next.js</SelectItem>
                     <SelectItem value="vue">Vue.js</SelectItem>
                     <SelectItem value="angular">Angular</SelectItem>
                     <SelectItem value="django">Django</SelectItem>
@@ -144,8 +177,8 @@ function CreateDialog({ open, onOpenChange }: CreateDialogProps) {
         </Tabs>
 
         <DialogFooter>
-          <Button type="submit" onClick={handleSave}>
-            Save
+          <Button type="submit" onClick={handleCreate}>
+            Create
           </Button>
         </DialogFooter>
       </DialogContent>
