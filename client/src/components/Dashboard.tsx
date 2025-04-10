@@ -2,7 +2,7 @@ import { SignedIn, UserButton } from "@clerk/clerk-react";
 import { useUser } from "@clerk/clerk-react";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { SidebarProvider, SidebarTrigger } from "./ui/sidebar";
+import { SidebarProvider } from "./ui/sidebar";
 import { AppSidebar } from "./ui/app-sidebar";
 import { Button } from "./ui/button";
 import { Github, Plus } from "lucide-react";
@@ -37,34 +37,38 @@ function Dashboard() {
   }, [user, isLoaded, isSignedIn]);
 
   useEffect(() => {
-    console.log(CurrUser);
     if (CurrUser) {
       storeUser();
+      localStorage.setItem("userId", CurrUser.userId);
     }
   }, [CurrUser]);
 
   async function storeUser() {
     const { userId, userName, email, profilePic } = CurrUser || {};
 
-    try {
-      const response = await axios.post(
-        "http://localhost:9000/api/user/signIn",
-        {
-          userId,
-          userName,
-          email,
-          profilePic,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
+    if (CurrUser) {
+      return;
+    } else {
+      try {
+        const response = await axios.post(
+          "http://localhost:9000/api/user/signIn",
+          {
+            userId,
+            userName,
+            email,
+            profilePic,
           },
-        }
-      );
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-      console.log(response);
-    } catch (error) {
-      console.log(error, "error storing in");
+        console.log(response);
+      } catch (error) {
+        console.log(error, "error storing user");
+      }
     }
   }
 
