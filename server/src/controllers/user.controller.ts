@@ -23,7 +23,7 @@ export async function SignIn(req: Request, res: Response): Promise<any> {
       },
     });
 
-    console.log(user);
+    // console.log(user);
     return res.status(201).json({ message: "user created successfully", user });
   } catch (error: any) {
     return res
