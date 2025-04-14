@@ -4,31 +4,6 @@ import path from "path";
 
 const dockerode: Dockerode = new Dockerode();
 
-interface languageConfig {
-  imageName: string;
-}
-
-// const LANGUAGE_CONFIG: Record<Languages, languageConfig> = {
-//   python: {
-//     imageName: "python",
-//   },
-//   cpp: {
-//     imageName: "code-runner-cpp",
-//   },
-//   javaScript: {
-//     imageName: "code-runner-javaScript",
-//   },
-//   java: {
-//     imageName: "code-runner-java",
-//   },
-//   c: {
-//     imageName: "code-runner-c",
-//   },
-//   sql: {
-//     imageName: "code-runner-sql",
-//   },
-// };
-
 const LANGUAGE_CONFIG = {
   python: {
     imageName: "python:3.9-slim", // Explicit version
