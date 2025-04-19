@@ -17,49 +17,75 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-import { ChevronRight, TerminalIcon, Code, Play } from "lucide-react";
+import { TerminalIcon, Code, Play } from "lucide-react";
+import axios from "axios";
 
 function WorkSpace() {
+  const selectedOption = useAppSelector((state) => state.selectedOption.lang);
   const containerId = useAppSelector((state) => state.container.containerId);
-  const [terminalOutput, setTerminalOutput] = useState<string[]>([
+  const [code, setCode] = useState<string>();
+  const [terminalOutput, setTerminalOutput] = useState<string>(`
     "Terminal initialized...",
     "Python 3.9.2",
-    "> ",
-  ]);
+    "> ",`);
   const [terminalInput, setTerminalInput] = useState("");
   const [theme, setTheme] = useState("dracula");
   const [fontSize, setFontSize] = useState(16);
 
-  useEffect(() => {
-    const handleResize = () => {
-      //creating a resize event
-      window.dispatchEvent(new Event("resize"));
-    };
+  const userId: string | null = localStorage.getItem("userId");
 
-    handleResize();
-    window.addEventListener("resize", handleResize);
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     //creating a resize event
+  //     window.dispatchEvent(new Event("resize"));
+  //   };
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  //   handleResize();
+  //   window.addEventListener("resize", handleResize);
+
+  //   return () => {
+  //     window.removeEventListener("resize", handleResize);
+  //   };
+  // }, []);
 
   function onChange(newValue: string): void {
-    console.log("change", newValue);
+    setCode(newValue);
+
+    console.log(code);
   }
 
-  function handleTerminalSubmit(e: React.KeyboardEvent) {
-    if (e.key === "Enter") {
-      const newOutput = [...terminalOutput];
-      newOutput[newOutput.length - 1] = "> " + terminalInput;
-      newOutput.push("> ");
-      setTerminalOutput(newOutput);
-      setTerminalInput("");
-    }
-  }
+  // function handleTerminalSubmit(e: React.KeyboardEvent) {
+  //   if (e.key === "Enter") {
+  //     const newOutput = [...terminalOutput];
+  //     newOutput[newOutput.length - 1] = "> " + terminalInput;
+  //     newOutput.push("> ");
+  //     setTerminalOutput(newOutput);
+  //     setTerminalInput("");
+  //   }
+  // }
 
   if (!containerId) console.log("no container id");
+  else console.log(containerId);
+
+  async function executeCode() {
+    console.log(selectedOption);
+    try {
+      const response: any = await axios.post(
+        "http://localhost:9000/api/container/exec/python",
+        {
+          containerId,
+          userId,
+          language: selectedOption,
+          code,
+        }
+      );
+
+      console.log(response);
+      setTerminalOutput(response.data.output);
+    } catch (error) {
+      console.log("error running code", error);
+    }
+  }
 
   return (
     <div className="flex flex-col h-screen bg-[#0d1117]">
@@ -188,7 +214,11 @@ function WorkSpace() {
               <span className="text-[#c9d1d9] font-medium text-lg">
                 main.py
               </span>
-              <button className="p-1.5 rounded hover:bg-[#30363d] text-[#58a6ff] cursor-pointer">
+              {/* button to run code */}
+              <button
+                className="p-1.5 rounded hover:bg-[#30363d] text-[#58a6ff] cursor-pointer"
+                onClick={() => executeCode()}
+              >
                 <Play size={18} />
               </button>
             </div>
@@ -237,48 +267,11 @@ function WorkSpace() {
             <TerminalIcon size={16} className="text-[#58a6ff] mr-2" />
             <span className="text-[#c9d1d9] font-medium">Terminal</span>
           </div>
-          <div className="flex-grow p-3 bg-[#0d1117] text-[#c9d1d9] font-mono overflow-y-auto">
-            {terminalOutput.map((line, i) => (
-              <div key={i} className="flex items-start">
-                {i === terminalOutput.length - 1 && line === "> " ? (
-                  <div className="flex items-center">
-                    <ChevronRight size={16} className="text-[#58a6ff] mr-1" />
-                    <input
-                      type="text"
-                      value={terminalInput}
-                      onChange={(e) => setTerminalInput(e.target.value)}
-                      onKeyDown={handleTerminalSubmit}
-                      className="bg-transparent border-none outline-none text-[#e6edf3] w-full"
-                      style={{
-                        fontSize: `${fontSize}px`,
-                        fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
-                      }}
-                      autoFocus
-                    />
-                  </div>
-                ) : (
-                  <div className="flex">
-                    {line.startsWith("> ") && (
-                      <ChevronRight
-                        size={16}
-                        className="text-[#58a6ff] mr-1 mt-1"
-                      />
-                    )}
-                    <span
-                      style={{
-                        fontSize: `${fontSize}px`,
-                        fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
-                        color: line.startsWith("Terminal initialized")
-                          ? "#8b949e"
-                          : "#e6edf3",
-                      }}
-                    >
-                      {line.startsWith("> ") ? line.substring(2) : line}
-                    </span>
-                  </div>
-                )}
-              </div>
-            ))}
+          <div className="grid mr-14 p-3 bg-[#0d1117] text-[#c9d1d9] font-mono overflow-y-auto">
+            {terminalOutput}
+            <span className="mt-10 text-gray-500">
+              === executed the code ===
+            </span>
           </div>
         </div>
       </div>

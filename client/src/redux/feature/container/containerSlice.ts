@@ -6,7 +6,7 @@ export interface containerState {
 }
 
 const initialState: containerState = {
-  containerId: "",
+  containerId: sessionStorage.getItem("containerId") || null,
 };
 
 export const containerSlice = createSlice({

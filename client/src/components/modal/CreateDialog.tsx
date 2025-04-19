@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
@@ -22,6 +22,7 @@ import {
 import { useAppDispatch } from "@/hooks/redux-hooks";
 import { setContainerId } from "@/redux/feature/container/containerSlice";
 import { useNavigate } from "react-router-dom";
+import { setLang } from "@/redux/feature/langs/langOptionsSlice";
 
 interface CreateDialogProps {
   open: boolean;
@@ -32,7 +33,7 @@ function CreateDialog({ open, onOpenChange }: CreateDialogProps) {
   const [activeTab, setActiveTab] = useState<"languages" | "frameworks">(
     "languages"
   );
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null); //for language/framework
   const [fileName, setFileName] = useState<string>("");
   const [loading, setLoading] = useState<Boolean>(false);
 
@@ -46,6 +47,11 @@ function CreateDialog({ open, onOpenChange }: CreateDialogProps) {
     console.log("Type:", type);
     console.log("Selected:", selectedOption);
     console.log("File Name:", fileName);
+
+    if (selectedOption) {
+      dispatch(setLang(selectedOption));
+      sessionStorage.setItem("lang", selectedOption);
+    }
 
     setLoading(true);
 
@@ -61,6 +67,7 @@ function CreateDialog({ open, onOpenChange }: CreateDialogProps) {
 
       console.log(response);
       dispatch(setContainerId(response.data.containerId));
+      sessionStorage.setItem("containerId", response.data.containerId);
     } catch (error) {
       console.log("error creating workspace", error);
     } finally {
@@ -177,7 +184,11 @@ function CreateDialog({ open, onOpenChange }: CreateDialogProps) {
         </Tabs>
 
         <DialogFooter>
-          <Button type="submit" onClick={handleCreate}>
+          <Button
+            type="submit"
+            onClick={handleCreate}
+            className="cursor-pointer"
+          >
             Create
           </Button>
         </DialogFooter>
