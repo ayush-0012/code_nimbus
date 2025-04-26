@@ -71,7 +71,7 @@ function WorkSpace() {
     console.log(selectedOption);
     try {
       const response: any = await axios.post(
-        "http://localhost:9000/api/container/exec/python",
+        "http://localhost:9000/api/container/exec",
         {
           containerId,
           userId,
@@ -277,14 +277,14 @@ function WorkSpace() {
       </div>
 
       {/* Status bar */}
-      <div className="border-t border-[#30363d] p-2 bg-[#161b22] text-[#8b949e] text-xs flex justify-between">
+      {/* <div className="border-t border-[#30363d] p-2 bg-[#161b22] text-[#8b949e] text-xs flex justify-between">
         <div>Python 3.9.2</div>
         <div>
           {containerId
-            ? `Container: ${containerId.substring(0, 8)}`
+            ? `Container: ${containerId.substring(0, 5)}`
             : "No container"}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
