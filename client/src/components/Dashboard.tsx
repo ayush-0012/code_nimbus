@@ -9,6 +9,7 @@ import { Github, Plus } from "lucide-react";
 import { Input } from "./ui/input";
 import { ModeToggle } from "./ui/mode-toggle";
 import CreateDialog from "./modal/CreateDialog";
+import { Bounce, toast, ToastContainer } from "react-toastify";
 
 interface userObj {
   userId: string;
@@ -130,6 +131,18 @@ function Dashboard() {
           )}
         </div>
       </div>
+      <ToastContainer
+        position="top-center"
+        autoClose={false}
+        limit={1}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        theme="colored"
+        transition={Bounce}
+      />
     </>
   );
 }
