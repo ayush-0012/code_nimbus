@@ -8,10 +8,10 @@ const dockerode: Dockerode = new Dockerode();
 export async function buildDockerImage(imageName: string) {
   const dockerFilePath = path.join("./containers/multiLang/Dockerfile"); //gettig dockerfile path
 
-  if (!fs.existsSync(dockerFilePath)) {
-    console.log(`Dockerfile not found at ${dockerFilePath}`);
-  } else {
+  if (fs.existsSync(dockerFilePath)) {
     console.log(`Dockerfile found at ${dockerFilePath}`);
+  } else {
+    console.log(`Dockerfile not found at ${dockerFilePath}`);
   }
 
   const stream = await dockerode.buildImage(
