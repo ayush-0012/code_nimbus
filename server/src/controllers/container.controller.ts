@@ -5,51 +5,36 @@ import { buildDockerImage } from "../utils/buildImage.utils";
 
 const docker: Docker = new Docker();
 
-const LANGUAGE_CONFIG = {
-  python: {
-    imageName: "python:3.9-slim",
-  },
-  cpp: {
-    imageName: "gcc:latest",
-  },
-  javaScript: {
-    imageName: "node:18-alpine",
-  },
-  java: {
-    imageName: "openjdk:17-jdk",
-  },
-  c: {
-    imageName: "gcc:latest",
-  },
-  sql: {
-    imageName: "mysql:8.0",
-  },
-};
+const MAX_CONTAINERS: string[] = [];
+const MAX_POOL_SIZE: number = 2;
 
-export async function runPythonContainer(
+export async function createContainer(
   req: Request<{}, {}, { language: Languages; userId: string }>,
   res: Response
 ): Promise<any> {
-  const { language, userId } = req.body;
+  const { userId } = req.body;
 
-  const dockerImage = LANGUAGE_CONFIG[language].imageName;
+  const dockerImage: string = "multilang-code-runner:latest";
+
+  if (MAX_CONTAINERS.length >= MAX_POOL_SIZE) {
+    return res.status(429).json({
+      clientMsg: "Server is busy please try again later ",
+      message: "All contaienrs are busy",
+    });
+  }
 
   try {
     await docker.getImage(dockerImage).inspect();
     console.log(`docker image exists: ${dockerImage}`); //checks if image is available
   } catch (error) {
     console.log(`building image: ${dockerImage}`);
-    await buildDockerImage(language); //if not available, then build image
+    await buildDockerImage(dockerImage); //if not available, then build image
   }
 
   try {
     const container = await docker.createContainer({
-      Image: LANGUAGE_CONFIG[language].imageName,
-      Cmd: [
-        "sh",
-        "-c",
-        "echo 'Container started successfully' && sleep infinity",
-      ],
+      Image: dockerImage,
+      Cmd: ["tail", "-f", "/dev/null"],
       AttachStdout: true,
       AttachStderr: true,
       Tty: true,
@@ -58,6 +43,12 @@ export async function runPythonContainer(
         Memory: 512 * 1024 * 1024, // limiting RAM
       },
     });
+
+    if (container) {
+      MAX_CONTAINERS.push(container.id);
+    }
+
+    console.log(MAX_CONTAINERS.length);
 
     await container.start();
 
@@ -85,6 +76,7 @@ export async function runPythonContainer(
   }
 }
 
+//controller to execute code
 export async function executeCode(
   req: Request<
     {},
@@ -106,6 +98,18 @@ export async function executeCode(
         break;
       case "javascript":
         command = `node -e "${code.replace(/"/g, '\\"')}"`;
+        break;
+      case "java":
+        command = `echo "${code.replace(/"/g, '\\"')}" > Main.java && javac Main.java && java Main`;
+        break;
+      case "c":
+        command = `echo "${code.replace(/"/g, '\\"')}" > main.c && gcc main.c -o main && ./main`;
+        break;
+      case "cpp":
+        command = `echo "${code.replace(/"/g, '\\"')}" > main.cpp && g++ main.cpp -o main && ./main`;
+        break;
+      case "sql":
+        command = `sqlite3 :memory: "${code.replace(/"/g, '\\"')}"`;
         break;
       default:
         return res.status(400).json({ error: "Unsupported language" });
