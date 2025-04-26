@@ -1,35 +1,18 @@
-import { Languages } from "@prisma/client";
 import Dockerode from "dockerode";
 import path from "path";
+import fs from "fs";
 
 const dockerode: Dockerode = new Dockerode();
 
-const LANGUAGE_CONFIG = {
-  python: {
-    imageName: "python:3.9-slim", // Explicit version
-  },
-  cpp: {
-    imageName: "gcc:latest", // Official GCC image
-  },
-  javaScript: {
-    imageName: "node:18-alpine", // Official Node.js
-  },
-  java: {
-    imageName: "openjdk:17-jdk", // Official OpenJDK
-  },
-  c: {
-    imageName: "gcc:latest", // Same as C++
-  },
-  sql: {
-    imageName: "mysql:8.0", // Or postgres:alpine
-  },
-};
-
 //build image if missing
-export async function buildDockerImage(language: Languages) {
-  const dockerFilePath = path.join(`./containers/${language}/Dockerfile`); //gettig dockerfile path
+export async function buildDockerImage(imageName: string) {
+  const dockerFilePath = path.join("./containers/multiLang/Dockerfile"); //gettig dockerfile path
 
-  const imageName = LANGUAGE_CONFIG[language].imageName;
+  if (!fs.existsSync(dockerFilePath)) {
+    console.log(`Dockerfile not found at ${dockerFilePath}`);
+  } else {
+    console.log(`Dockerfile found at ${dockerFilePath}`);
+  }
 
   const stream = await dockerode.buildImage(
     {
