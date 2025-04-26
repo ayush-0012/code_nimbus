@@ -55,9 +55,11 @@ function CreateDialog({ open, onOpenChange }: CreateDialogProps) {
 
     setLoading(true);
 
+    let response: any;
+
     try {
       const response = await axios.post(
-        `http://localhost:9000/api/container/${selectedOption}`,
+        `http://localhost:9000/api/container/create`,
         {
           fileName,
           language: selectedOption,
@@ -68,11 +70,16 @@ function CreateDialog({ open, onOpenChange }: CreateDialogProps) {
       console.log(response);
       dispatch(setContainerId(response.data.containerId));
       sessionStorage.setItem("containerId", response.data.containerId);
-    } catch (error) {
-      console.log("error creating workspace", error);
+    } catch (error: any) {
+      console.log(error.response.data.clientMsg, error);
     } finally {
       setLoading(false);
-      navigate("/workspace");
+
+      if (response.status == 429) {
+        return;
+      } else {
+        navigate("/workspace");
+      }
     }
   };
 
