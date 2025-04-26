@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
@@ -23,6 +23,7 @@ import { useAppDispatch } from "@/hooks/redux-hooks";
 import { setContainerId } from "@/redux/feature/container/containerSlice";
 import { useNavigate } from "react-router-dom";
 import { setLang } from "@/redux/feature/langs/langOptionsSlice";
+import { Bounce, ToastContainer, toast } from "react-toastify";
 
 interface CreateDialogProps {
   open: boolean;
@@ -55,7 +56,7 @@ function CreateDialog({ open, onOpenChange }: CreateDialogProps) {
 
     setLoading(true);
 
-    let response: any;
+    let resStatusCode: number = 0;
 
     try {
       const response = await axios.post(
@@ -71,11 +72,26 @@ function CreateDialog({ open, onOpenChange }: CreateDialogProps) {
       dispatch(setContainerId(response.data.containerId));
       sessionStorage.setItem("containerId", response.data.containerId);
     } catch (error: any) {
-      console.log(error.response.data.clientMsg, error);
+      console.log(error.response.data.clientMsg);
+      // console.log(error.response.status);
+      resStatusCode = error.response.status;
+
+      //toast error
+      toast.error(error.response.data.clientMsg, {
+        position: "top-center",
+        autoClose: 4000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+      });
     } finally {
       setLoading(false);
 
-      if (response.status == 429) {
+      if (resStatusCode === 429) {
         return;
       } else {
         navigate("/workspace");
@@ -88,119 +104,122 @@ function CreateDialog({ open, onOpenChange }: CreateDialogProps) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
-        <DialogHeader>
-          <DialogTitle>Create Workspace</DialogTitle>
-          <DialogDescription>
-            Choose a category and give your file a name to start.
-          </DialogDescription>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Create Workspace</DialogTitle>
+            <DialogDescription>
+              Choose a category and give your file a name to start.
+            </DialogDescription>
+          </DialogHeader>
 
-        <Tabs
-          defaultValue="languages"
-          value={activeTab}
-          onValueChange={(value) =>
-            setActiveTab(value as "languages" | "frameworks")
-          }
-          className="w-full mt-4"
-        >
-          {/* Tabs List */}
-          <TabsList className="grid w-full grid-cols-2 ">
-            <TabsTrigger value="languages" className="cursor-pointer">
-              Programming Languages
-            </TabsTrigger>
-            <TabsTrigger value="frameworks" className="cursor-pointer">
-              Frameworks
-            </TabsTrigger>
-          </TabsList>
-
-          {/* TabsContent wraps around shared UI below */}
-          <TabsContent value="languages">
-            {/* File Name Input */}
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="fileName" className="text-right">
-                  File Name
-                </Label>
-                <Input
-                  id="fileName"
-                  className="col-span-3"
-                  placeholder="e.g. xyz"
-                  value={fileName}
-                  onChange={(e) => setFileName(e.target.value)}
-                />
-              </div>
-
-              {/* Language Dropdown */}
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label className="text-right">Language</Label>
-                <Select onValueChange={(value) => setSelectedOption(value)}>
-                  <SelectTrigger className="col-span-3">
-                    <SelectValue placeholder="Select a language" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="javaScript">JavaScript</SelectItem>
-                    <SelectItem value="python">Python</SelectItem>
-                    <SelectItem value="java">Java</SelectItem>
-                    <SelectItem value="cpp">C++</SelectItem>
-                    <SelectItem value="typeScript">TypeScript</SelectItem>
-                    <SelectItem value="go">Go</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="frameworks">
-            {/* File Name Input */}
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="fileName" className="text-right">
-                  File Name
-                </Label>
-                <Input
-                  id="fileName"
-                  className="col-span-3"
-                  placeholder="e.g. xyz"
-                  value={fileName}
-                  onChange={(e) => setFileName(e.target.value)}
-                />
-              </div>
-
-              {/* Framework Dropdown */}
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label className="text-right">Framework</Label>
-                <Select onValueChange={(value) => setSelectedOption(value)}>
-                  <SelectTrigger className="col-span-3">
-                    <SelectValue placeholder="Select a framework" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="reactJs">React</SelectItem>
-                    <SelectItem value="nextJs">Next.js</SelectItem>
-                    <SelectItem value="vue">Vue.js</SelectItem>
-                    <SelectItem value="angular">Angular</SelectItem>
-                    <SelectItem value="django">Django</SelectItem>
-                    <SelectItem value="flask">Flask</SelectItem>
-                    <SelectItem value="express">Express</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </TabsContent>
-        </Tabs>
-
-        <DialogFooter>
-          <Button
-            type="submit"
-            onClick={handleCreate}
-            className="cursor-pointer"
+          <Tabs
+            defaultValue="languages"
+            value={activeTab}
+            onValueChange={(value) =>
+              setActiveTab(value as "languages" | "frameworks")
+            }
+            className="w-full mt-4"
           >
-            Create
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+            {/* Tabs List */}
+            <TabsList className="grid w-full grid-cols-2 ">
+              <TabsTrigger value="languages" className="cursor-pointer">
+                Programming Languages
+              </TabsTrigger>
+              <TabsTrigger value="frameworks" className="cursor-pointer">
+                Frameworks
+              </TabsTrigger>
+            </TabsList>
+
+            {/* TabsContent wraps around shared UI below */}
+            <TabsContent value="languages">
+              {/* File Name Input */}
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="fileName" className="text-right">
+                    File Name
+                  </Label>
+                  <Input
+                    id="fileName"
+                    className="col-span-3"
+                    placeholder="e.g. xyz"
+                    value={fileName}
+                    onChange={(e) => setFileName(e.target.value)}
+                  />
+                </div>
+
+                {/* Language Dropdown */}
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label className="text-right">Language</Label>
+                  <Select onValueChange={(value) => setSelectedOption(value)}>
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder="Select a language" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="javaScript">JavaScript</SelectItem>
+                      <SelectItem value="python">Python</SelectItem>
+                      <SelectItem value="java">Java</SelectItem>
+                      <SelectItem value="cpp">C++</SelectItem>
+                      <SelectItem value="typeScript">TypeScript</SelectItem>
+                      <SelectItem value="go">Go</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="frameworks">
+              {/* File Name Input */}
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="fileName" className="text-right">
+                    File Name
+                  </Label>
+                  <Input
+                    id="fileName"
+                    className="col-span-3"
+                    placeholder="e.g. xyz"
+                    value={fileName}
+                    onChange={(e) => setFileName(e.target.value)}
+                  />
+                </div>
+
+                {/* Framework Dropdown */}
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label className="text-right">Framework</Label>
+                  <Select onValueChange={(value) => setSelectedOption(value)}>
+                    <SelectTrigger className="col-span-3">
+                      <SelectValue placeholder="Select a framework" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="reactJs">React</SelectItem>
+                      <SelectItem value="nextJs">Next.js</SelectItem>
+                      <SelectItem value="vue">Vue.js</SelectItem>
+                      <SelectItem value="angular">Angular</SelectItem>
+                      <SelectItem value="django">Django</SelectItem>
+                      <SelectItem value="flask">Flask</SelectItem>
+                      <SelectItem value="express">Express</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+
+          <DialogFooter>
+            <Button
+              type="submit"
+              onClick={handleCreate}
+              className="cursor-pointer"
+            >
+              Create
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      {/* <ToastContainer /> */}
+    </>
   );
 }
 
