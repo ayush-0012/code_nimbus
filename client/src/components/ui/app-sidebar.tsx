@@ -45,7 +45,7 @@ export function AppSidebar() {
                 { icon: FileText, label: "Get started" },
               ].map(({ icon: Icon, label }) => (
                 <SidebarMenuItem key={label}>
-                  <SidebarMenuButton className="gap-2 text-zinc-200 hover:text-white hover:bg-zinc-800 rounded-md px-2 py-1.5 transition cursor-pointer">
+                  <SidebarMenuButton className="gap-2 text-zinc-200 hover:text-white hover:bg-zinc-800 rounded-md px-2 py-1.5 transition cursor-pointer text-lg">
                     <Icon className="h-4 w-4" />
                     <span>{label}</span>
                   </SidebarMenuButton>
@@ -65,7 +65,7 @@ export function AppSidebar() {
                 { icon: GitFork, label: "My contributions" },
               ].map(({ icon: Icon, label }) => (
                 <SidebarMenuItem key={label}>
-                  <SidebarMenuButton className="gap-2 text-zinc-200 hover:text-white hover:bg-zinc-800 rounded-md px-2 py-1.5 transition cursor-pointer">
+                  <SidebarMenuButton className="gap-2 text-zinc-200 hover:text-white hover:bg-zinc-800 rounded-md px-2 py-1.5 transition cursor-pointer text-lg">
                     <Icon className="h-4 w-4" />
                     <span>{label}</span>
                   </SidebarMenuButton>
@@ -86,7 +86,7 @@ export function AppSidebar() {
                 { icon: Trash2, label: "Recently deleted" },
               ].map(({ icon: Icon, label }) => (
                 <SidebarMenuItem key={label}>
-                  <SidebarMenuButton className="gap-2 text-zinc-200 hover:text-white hover:bg-zinc-800 rounded-md px-2 py-1.5 transition cursor-pointer">
+                  <SidebarMenuButton className="gap-2 text-zinc-200 hover:text-white hover:bg-zinc-800 rounded-md px-2 py-1.5 transition cursor-pointer text-lg">
                     <Icon className="h-4 w-4" />
                     <span>{label}</span>
                   </SidebarMenuButton>
@@ -102,7 +102,7 @@ export function AppSidebar() {
             </div>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton className="gap-2 text-zinc-200 hover:text-white hover:bg-zinc-800 rounded-md px-2 py-1.5 transition cursor-pointer">
+                <SidebarMenuButton className="gap-2 text-zinc-200 hover:text-white hover:bg-zinc-800 rounded-md px-2 py-1.5 transition cursor-pointer text-lg">
                   <Share2 className="h-4 w-4" />
                   <span>Shared with me</span>
                 </SidebarMenuButton>
