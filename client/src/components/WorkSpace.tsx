@@ -1,4 +1,4 @@
-import React from "react";
+import { useRef } from "react";
 import { useAppSelector } from "@/hooks/redux-hooks";
 import { useState, useEffect } from "react";
 import AceEditor from "react-ace";
@@ -18,7 +18,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TerminalIcon, Code, Play } from "lucide-react";
-import axios from "axios";
+import { axiosInstance } from "@/utils/axiosInstace";
+import { markIdle } from "@/utils/markIdle";
+import SessionExpired from "./modal/SessionExpired";
 
 function WorkSpace() {
   const selectedOption = useAppSelector((state) => state.selectedOption.lang);
@@ -31,8 +33,21 @@ function WorkSpace() {
   const [terminalInput, setTerminalInput] = useState("");
   const [theme, setTheme] = useState("dracula");
   const [fontSize, setFontSize] = useState(16);
+  const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [idleContainer, setIdleContainer] = useState<boolean>(false);
 
   const userId: string | null = localStorage.getItem("userId");
+  const IDLE_TIMEOUT: number = 10 * 1000;
+
+  useEffect(() => {
+    resetIdleTime();
+
+    return () => {
+      if (idleTimerRef.current) {
+        clearTimeout(idleTimerRef.current);
+      }
+    };
+  }, []);
 
   // useEffect(() => {
   //   const handleResize = () => {
@@ -67,18 +82,44 @@ function WorkSpace() {
   if (!containerId) console.log("no container id");
   else console.log(containerId);
 
+  // async function markIdle() {
+  //   try {
+  //     const response = await axiosInstance.patch("/api/container/status", {
+  //       containerId,
+  //       userId,
+  //     });
+
+  //     console.log(response);
+  //   } catch (error) {
+  //     console.log("Error occured while marking the container Idle");
+  //   }
+  // }
+
+  function resetIdleTime() {
+    if (idleTimerRef.current) {
+      clearTimeout(idleTimerRef.current);
+    }
+
+    idleTimerRef.current = setTimeout(async () => {
+      console.log("user is inactive, making api call");
+      const status = await markIdle(containerId, userId);
+      setIdleContainer(true);
+      console.log(status);
+    }, IDLE_TIMEOUT);
+
+    return IDLE_TIMEOUT;
+  }
+
   async function executeCode() {
+    console.log(resetIdleTime());
     console.log(selectedOption);
     try {
-      const response: any = await axios.post(
-        "http://localhost:9000/api/container/exec",
-        {
-          containerId,
-          userId,
-          language: selectedOption,
-          code,
-        }
-      );
+      const response: any = await axiosInstance.post("/api/container/exec", {
+        containerId,
+        userId,
+        language: selectedOption,
+        code,
+      });
 
       console.log(response);
       setTerminalOutput(response.data.output);
@@ -86,6 +127,10 @@ function WorkSpace() {
       console.log("error running code", error);
     }
   }
+
+  // if (idleContainer) {
+  //   return <SessionExpired isIdle={true} />;
+  // }
 
   return (
     <div className="flex flex-col h-screen bg-[#0d1117]">
@@ -204,6 +249,8 @@ function WorkSpace() {
         </div>
       </div>
 
+      {idleContainer && <SessionExpired isIdle={true} />}
+
       {/* Main content area */}
       <div className="flex-grow p-4 bg-[#0d1117] flex">
         {/* Code Editor Section */}
@@ -217,7 +264,7 @@ function WorkSpace() {
               {/* button to run code */}
               <button
                 className="p-1.5 rounded hover:bg-[#30363d] text-[#58a6ff] cursor-pointer"
-                onClick={() => executeCode()}
+                onClick={executeCode}
               >
                 <Play size={18} />
               </button>
