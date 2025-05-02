@@ -1,6 +1,5 @@
 import { SignedIn, UserButton } from "@clerk/clerk-react";
 import { useUser } from "@clerk/clerk-react";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { SidebarProvider } from "./ui/sidebar";
 import { AppSidebar } from "./ui/app-sidebar";
@@ -8,8 +7,9 @@ import { Button } from "./ui/button";
 import { Github, Plus } from "lucide-react";
 import { Input } from "./ui/input";
 import { ModeToggle } from "./ui/mode-toggle";
-import CreateDialog from "./modal/CreateDialog";
-import { Bounce, toast, ToastContainer } from "react-toastify";
+import CreateDialog from "./CreateDialog";
+import { Bounce, ToastContainer } from "react-toastify";
+import { axiosInstance } from "@/utils/axiosInstace";
 
 interface userObj {
   userId: string;
@@ -51,8 +51,8 @@ function Dashboard() {
       return;
     } else {
       try {
-        const response = await axios.post(
-          "http://localhost:9000/api/user/signIn",
+        const response = await axiosInstance.post(
+          "/api/user/signIn",
           {
             userId,
             userName,
@@ -77,7 +77,7 @@ function Dashboard() {
     <>
       <div className="flex justify-end h-10 pt-4 px-2">
         <div className="flex justify-between items-center gap-3">
-          <ModeToggle />
+          {/* <ModeToggle /> */}
           <Input
             type="text"
             placeholder="Seach in Workspace"
